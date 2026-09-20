@@ -23,8 +23,7 @@ For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
 **Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
+Most of the questions are easy and fairly straight-forward. It's clear whether a numeric response is right or wrong. There's no debating time and cost quantities in the question answers. Although one of them could be considered an subjective opinion on "the best" time do laundry, so it's permissable if only one is incorrect.
 
 ---
 
@@ -32,9 +31,10 @@ contains the answer.
 
 Every answer the system produces names at least one source document.
 
-**Why this target:**
+**Why this target:**  
 <!-- Why all five and not four? What about your setup makes that achievable —
      or what would have to go wrong for it not to be? -->
+The corpus documents are short with straight-forward titles that describe the content. If the source fails to be named, then this signals to us that the document title is not being parced correctly. This means the system foundation is broken and needs to be looked at.  
 
 ---
 
@@ -53,9 +53,13 @@ in at least 4 of 5 tries.
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
 
+Since the corpus revolves around campus life, I think that there is always a small possibility that out-of-corpus questions could seem similar to campus life topic. For example: campus life covers food and athletics, which could potentially seem similar to sports off campus, like the World Cup. But overall, I don't want the system to make-up answer and be forthcoming enough to say "I don't know."
+
 ---
 
-## 4. Something about your chunks
+## 4. Chunks are short and less than 600 characters.  
+No chunk is over 600 characters. 
+
 
 <!-- YOU WRITE THIS ONE.
 
@@ -72,12 +76,12 @@ in at least 4 of 5 tries.
 
 
 **Why this target:**
-
+The answers are straight-forward with a lot of heavy lifting from the corpus document title. Students value conciseness and directness in the answers. Long-winded chunks with many characters would be a negative sign that the corpus documents are not being parsed correctly.  
 
 
 ---
 
-## 5. Your choice
+## 5. Answers do not contain profanity.  
 
 <!-- YOU WRITE THIS ONE TOO.
 
@@ -86,11 +90,11 @@ in at least 4 of 5 tries.
      handles badly, about source attribution being correct rather than merely
      present — anything, as long as it names a number or an observable
      outcome. -->
-
+5 out of 5 answers to do not contain profanity or curse words that would be deemed inappropriate for a school.  
 
 
 **Why this target:**
-
+It's not acceptable to have NSFW (Not Safe for Work) language in an university campus. Inappropriate tone and word choice of the response should not tarnish the reputation of the school.
 
 
 ---
