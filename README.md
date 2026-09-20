@@ -115,13 +115,55 @@ without reading what came before or after?
      visible. Milestone 4. -->
 
 **Question:**
+"How often does the bus shuttle run on Saturday?"
 
 **Answer:**
 
 ```
+python app.py ask "How often does the bus shuttle run on Saturday?" --show-prompt
+
+(best distance 0.301, cutoff 0.6)
+======================================================================
+System instruction sent with the prompt
+======================================================================
+You answer questions using only the documents provided to you.
+
+Rules:
+- Use only the information in the documents below. Do not use anything you know from elsewhere.
+- If the documents don't cover the question, say you don't have enough information. Do not guess.
+- Name the document your answer came from, using the filename given in each excerpt.
+- Be brief. Two or three sentences is usually enough.
+
+======================================================================
+The assembled prompt, exactly as sent
+======================================================================
+Documents:
+
+[from transit_shuttle.txt]
+The campus shuttle
+
+Runs a loop every 20 minutes from 7am to 11pm on weekdays and every 40 minutes on weekends. The published timetable is optimistic by about five minutes in the morning and accurate the rest of the day.
+
+[from winter_gear.txt]
+The paths get cleared by 7am on weekdays and considerably later on weekends.
+
+[from dining_kestrel_commons.txt]
+Hours are 7:00am to 9:00pm weekdays, 9:00am to 8:00pm weekends. Costs one meal swipe, or $12.50 cash.
+
+---
+
+Question: How often does the bus shuttle run on Saturday?
+
+Answer using only the documents above, and name the file you used.
+======================================================================
+
+Based on the campus shuttle document, the shuttle runs every 40 minutes on weekends (transit_shuttle.txt).
+
+Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.txt
 ```
 
-**My relevance cutoff:**
+**My relevance cutoff:** 0.55
+It looks like a clear boundary around 0.5 is forming for the in corpus document questions. And the obviously random questions out of context are above 0.8. I picked 0.55 in case to stay clear of rounding error in from the highest distance of 0.498 might have as it is rounded to 0.5 or trailing digits.  
 
 <!-- The number you set in config.py, and how you got there.
 
@@ -134,7 +176,18 @@ without reading what came before or after?
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| What time is the library open until during the term? | ✅ |0.409  |
+| How often does the bus shuttle run on Saturdays? | ✅|0.498  |
+| How much cloud storage do students get on student accounts? | ✅ |0.292  |
+| When do library and dining jobs get posted? | ✅ |0.409  |
+| When is the best time to do laundry in Alridge Hall? | ✅ |0.416|
+| What is the capital of Mongolia?| ❌ | 0.825
+| How do I change the oil in a diesel engine?| ❌ | 0.934
+| Who won the 1994 World Cup? | ❌ | 0.874 |
+| What is the recommended dosage of ibuprofen for a headache?| ❌ | 0.824
+| How do I write a for loop in Rust? | ❌ | 0.891
+
+
 
 ## How I Used AI
 
