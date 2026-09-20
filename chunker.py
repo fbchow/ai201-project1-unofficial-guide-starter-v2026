@@ -80,24 +80,104 @@ def fallback_split(
     return chunks
 
 
-def split_documents(documents: list[Document]) -> list[Chunk]:
+def _recursive_split(text: str, chunk_size: int, separators: list[str]) -> list[str]:
     """
-    Split documents into chunks. ⚠️ REPLACE THE BODY OF THIS IN MILESTONE 3.
+    Split `text` on the first separator that appears in it, then recurse on
+    any piece that's still too big, moving down the separator list.
 
-    Right now it just calls the fallback. That is the plain, generic behaviour
-    the brief is talking about.
-
-    When you write your own strategy, set `produced_by` to
-    "chunker.py::split_documents" so your README's Sample Chunks section names
-    the right function. `app.py chunks` prints that string for you.
-
-    Things worth thinking about before you write any code:
-      - Are your documents short posts or long guides?
-      - Is the useful information in one sentence, or spread over a paragraph?
-      - Would splitting on paragraph breaks keep more thoughts intact than
-        splitting on a character count?
+    Separators are tried in order (paragraph breaks, then line breaks, then
+    words). If none of them appear, or we run out of separators, fall back to
+    a hard character-level cut — the same thing `fallback_split` does.
     """
-    return fallback_split(documents)
+    if len(text) <= chunk_size:
+        return [text] if text else []
+
+    if not separators:
+        return [
+            text[start : start + chunk_size]
+            for start in range(0, len(text), chunk_size)
+        ]
+
+    separator, rest = separators[0], separators[1:]
+    if separator not in text:
+        return _recursive_split(text, chunk_size, rest)
+
+    pieces: list[str] = []
+    for part in text.split(separator):
+        if not part.strip():
+            continue
+        if len(part) <= chunk_size:
+            pieces.append(part)
+        else:
+            pieces.extend(_recursive_split(part, chunk_size, rest))
+    return pieces
+
+
+def _merge_pieces(pieces: list[str], chunk_size: int, overlap: int) -> list[str]:
+    """
+    Greedily glue small pieces back together (paragraph by paragraph) up to
+    `chunk_size`, so a chunk isn't just one short paragraph. Each new chunk
+    is seeded with the tail of the previous one so neighbouring chunks share
+    `overlap` characters of context.
+    """
+    chunks: list[str] = []
+    current = ""
+    for piece in pieces:
+        candidate = f"{current}\n\n{piece}" if current else piece
+        if len(candidate) <= chunk_size:
+            current = candidate
+            continue
+
+        if current:
+            chunks.append(current)
+            tail = current[-overlap:] if overlap else ""
+            current = f"{tail}\n\n{piece}" if tail else piece
+        else:
+            current = piece
+
+    if current:
+        chunks.append(current)
+
+    return chunks
+
+
+def split_documents(
+    documents: list[Document],
+    chunk_size: int | None = None,
+    overlap: int | None = None,
+) -> list[Chunk]:
+    """
+    Split documents into chunks using a simple recursive character splitter.
+
+    Line breaks ("\\n") are the primary split point. Any line still longer
+    than `chunk_size` is recursively re-split on spaces, falling back to a
+    hard character cut only as a last resort. Small pieces are then merged
+    back together up to `chunk_size`, so a short line isn't stranded as its
+    own tiny chunk, and neighbouring chunks share `overlap` characters of
+    context.
+    """
+    chunk_size = chunk_size or config.CHUNK_SIZE
+    overlap = overlap or config.CHUNK_OVERLAP
+
+    if overlap >= chunk_size:
+        raise ValueError("overlap has to be smaller than chunk_size")
+
+    chunks: list[Chunk] = []
+    for doc in documents:
+        pieces = _recursive_split(doc.text, chunk_size, ["\n", " "])
+        for index, text in enumerate(_merge_pieces(pieces, chunk_size, overlap)):
+            text = text.strip()
+            if text:
+                chunks.append(
+                    Chunk(
+                        text=text,
+                        source=doc.source,
+                        index=index,
+                        produced_by="chunker.py::split_documents",
+                    )
+                )
+
+    return chunks
 
 
 def describe(chunks: list[Chunk]) -> str:

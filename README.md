@@ -1,5 +1,5 @@
 # The Unofficial Guide
-
+## Campus Life
 <!-- Replace this line with your name and which corpus you picked. -->
 
 > **This file is your submission.** Fill it in as you go — most sections get
@@ -29,8 +29,12 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 320
+**Overlap:** 0
+
+Since the average character length of each document was 317 characters, I picked 320 characters as a chunk size. If that's the average for each document then in general, each paragraph will have less than 320 characters per new line or paragraph.
+
+Both the questions and answers I propose straight-forward and short. They can be deduced from each new line of info in a document. Since I don't expect the information to come from multiple lines and multiple paragraphs, I tried recursive character text splitting on the new line "\n" character. This eliminates the need for overlap because a new line is such a clear delimiter you don't need extra overlap padding characters as back-up in case your chunks overlap in an awkward way.  
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -53,30 +57,56 @@
 
      Milestone 3. -->
 
-**Chunk 1** — source: `thread_bike_commute.txt#0 ` — produced by: `chunker.py::fallback_split`
-
-26 chunks total. Showing 1, spread across the corpus.
-```
-```
-
-**Chunk 2** — source: `` — produced by: ``
 
 ```
-```
+                    
+129 chunks total. Showing 5, spread across the corpus.
 
-**Chunk 3** — source: `` — produced by: ``
+Paste these into your README under Sample Chunks. The rubric asks
+for the source file and the function that produced them — both are
+printed for you below.
 
-```
-```
+======================================================================
+Chunk 1  |  source: admin_add_drop_deadline.txt#0  |  produced by: chunker.py::split_documents
+======================================================================
+On the add/drop deadline
 
-**Chunk 4** — source: `` — produced by: ``
+You can add a course through the end of the second week. Dropping is a longer window — through the end of week six — but a drop after week two shows as a W on your transcript. Nothing anywhere on the registrar's site says this plainly, and students find out from each other.
 
-```
-```
+======================================================================
+Chunk 2  |  source: course_cs_210_exams.txt#0  |  produced by: chunker.py::split_documents
+======================================================================
+CS 210 Data Structures — assessment
 
-**Chunk 5** — source: `` — produced by: ``
+Two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
 
-```
+Do the labs even though they're only 10% — the exams reuse the lab problems.
+
+======================================================================
+Chunk 3  |  source: course_phys_130_workload.txt#0  |  produced by: chunker.py::split_documents
+======================================================================
+Workload for PHYS 130 Mechanics
+
+People keep asking so: 7 hours a week, plus 3 on lab weeks. That's real time, not optimistic time.
+
+It's front-loaded — the first month is heavier than the rest, partly because you're learning the format.
+
+======================================================================
+Chunk 4  |  source: dining_the_ridgeway_cafe.txt#1  |  produced by: chunker.py::split_documents
+======================================================================
+Hours are 7:00am to 4:00pm weekdays only. Costs declining balance only, no meal swipes.
+
+======================================================================
+Chunk 5  |  source: housing_morrow_house.txt#0  |  produced by: chunker.py::split_documents
+======================================================================
+Morrow House — what it's actually like
+
+Just finished a year in this building. Built 1954, partially renovated 2008. Rooms are singles and doubles, hall bathrooms.
+
+The good: cheapest housing tier by about $900 a year, and the singles are real singles.
+
+For each one, ask: could someone answer a question using only this,
+without reading what came before or after?
 ```
 
 ## Sample Answer
