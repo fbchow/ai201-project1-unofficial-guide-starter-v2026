@@ -2,24 +2,12 @@
 ## Campus Life
 <!-- Replace this line with your name and which corpus you picked. -->
 
-> **This file is your submission.** Fill it in as you go — most sections get
-> written during the milestone that produces them, not at the end.
->
-> How the starter works, and every command you'll need, is in `RUNNING.md`.
-> Leave that file alone.
->
-> **Paste everything as text.** No screenshots, no video. A typed table gets
-> full credit; a picture of the same table gets none.
->
-> Delete these instruction blocks as you replace them. The `<!-- -->` comments
-> are notes to you and don't show up when the page renders — you can leave them
-> or remove them.
-
 ---
 
 # Unit 1
 
 ## What This Does
+This system answers questions about university campus life from a collection of short 88 documents. The documents are parsed into chunks by new line, and these units of information are sourced to answer user questions. Campus life topics, include transportation, housing, courses, library. If the sytem does not know the answer to a question, it will say so rather than make up an answer.  
 
 <!-- Three or four sentences. Which corpus you picked, and the kinds of
      questions your system answers. Write it for someone who has never seen
@@ -200,9 +188,29 @@ It looks like a clear boundary around 0.5 is forming for the in corpus document 
 
      Milestone 5. -->
 
-**1.**
+**1.** 
+I asked Claude to write the recursive character split function. I learned about this chunking strategy from [this Youtube video](https://www.youtube.com/watch?v=8OJC21T2SL4&t=964s) and [this dev.to blog post](https://dev.to/eteimz/understanding-langchains-recursivecharactertextsplitter-2846). Most examples online, like [this denser.ai blog post](https://denser.ai/blog/rag-chunking-strategies/), use the `RecursiveCharacterTextSplitter()` function from the LangChain library, but I did not want to import an external library. I asked Claude to implement a simple recursive character split function that splits chunks by new lines because that's how my answers will look like.  
+
 
 **2.**
+I asked Claude to clarify how the recursive character splitting logic works: "In the simplest terms, explain how recurisve character splitting works as an algorithm. how does the chunk size and overlap size get factored in?"
+
+The response:
+```
+Recursive character splitting works like this, in plain terms:
+
+Try to cut the text at a "nice" boundary. It has a priority list of separators — usually paragraph breaks (\n\n) first, then line breaks (\n), then spaces ( ), then finally just individual characters as a last resort.
+Split on the first separator that appears, breaking the text into a list of pieces (e.g., paragraphs).
+Check each piece against chunk_size. If a piece is small enough, keep it as-is. If a piece is still too big, recurse: try splitting that piece using the next separator down the list (e.g., paragraph → lines → spaces → characters).
+This repeats until every piece fits under chunk_size.
+Where chunk_size comes in: it's the ceiling — the algorithm keeps re-splitting on smaller and smaller boundaries only until each piece is ≤ chunk_size. It's the trigger for "is this piece done, or does it need to be cut further?"
+
+Where overlap comes in: it's not part of the splitting step at all — it's applied afterward, during merging. Once you have small pieces, you glue them back together up to chunk_size to avoid tiny stray chunks. When starting a new chunk, you seed it with the last overlap characters of the previous chunk, so consecutive chunks share some context instead of cutting off mid-thought at the boundary.
+
+In this codebase, that's exactly what _recursive_split (splitting) and _merge_pieces (merging + overlap) do, called from split_documents.
+```
+
+
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
