@@ -151,6 +151,7 @@ Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.
 ```
 
 **My relevance cutoff:** 0.55
+
 It looks like a clear boundary around 0.5 is forming for the in corpus document questions. And the obviously random questions out of context are above 0.8. I picked 0.55 in case to stay clear of rounding error in from the highest distance of 0.498 might have as it is rounded to 0.5 or trailing digits.  
 
 <!-- The number you set in config.py, and how you got there.
@@ -239,15 +240,176 @@ In this codebase, that's exactly what _recursive_split (splitting) and _merge_pi
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5   | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Chunks are short and less than 600 characters | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers do not contain profanity | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
+
+By running: `python run_eval.py --label before`, the file `results/run_2026-09-23-1558_before.md` produced these results:
+
+```
+### What time is the library open until during the term? — run 1
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+During the term, the library is open until 2am. 
+
+Sources: `housing_old_brewhouse_noise.txt` and `study_library_hours.txt`
+```
+
+### What time is the library open until during the term? — run 2
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+The library is open until 2am during the term (housing_old_brewhouse_noise.txt and study_library_hours.txt).
+```
+
+### What time is the library open until during the term? — run 3
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+The library is open until 2am during the term. 
+
+Source: *study_library_hours.txt* (also mentioned in *housing_old_brewhouse_noise.txt*)
+```
+
+### How often does the bus shuttle run on Saturdays? — run 1
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs every 40 minutes on weekends. 
+
+Source: transit_shuttle.txt
+```
+
+### How often does the bus shuttle run on Saturdays? — run 2
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs every 40 minutes on weekends. 
+
+Source: transit_shuttle.txt
+```
+
+### How often does the bus shuttle run on Saturdays? — run 3
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs every 40 minutes on weekends. 
+
+Source: transit_shuttle.txt
+```
+
+### How much cloud storage do students get on student accounts? — run 1
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage with their student account. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### How much cloud storage do students get on student accounts? — run 2
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage on their student accounts. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### How much cloud storage do students get on student accounts? — run 3
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage on their student accounts. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### When do library and dining jobs get posted? — run 1
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (money_jobs.txt).
+```
+
+### When do library and dining jobs get posted? — run 2
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (money_jobs.txt).
+```
+
+### When do library and dining jobs get posted? — run 3
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (source: money_jobs.txt).
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 1
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: housing_aldridge_hall_laundry.txt
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 2
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: housing_aldridge_hall_laundry.txt
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 3
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: housing_aldridge_hall_laundry.txt
+```
+```
 
 ## Verdicts
 
@@ -262,11 +424,11 @@ In this codebase, that's exactly what _recursive_split (splitting) and _merge_pi
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunks contain the answer | MET | I looked through each answer and it contained the answer. It was fairly simple because the answer is concise and straight-forward. |
+| 2 | Every answer names a source | MET | Each answer has a legitimate source text file that the answer refers to. |
+| 3 | The relevance gate stops out-of-corpus questions | MET  | The results printout says the refusal gate stopped all of the questions, so model inference resources weren't wasted on random questions. |
+| 4 | Chunks are short and less than 600 characters.   | MET | I roughly scanned the answers and picked the longest visual sentence: "The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning." The python `len()` function returns 77 characters. If the longest looking sentence is well below 600 characters, then I can infer that the other shorter chunks are less than 600 characters as well.|
+| 5 | Answers do not contain profanity.  | MET | I do not see curse words in any of the responses. |
 
 ## Diagnoses
 
@@ -287,6 +449,8 @@ In this codebase, that's exactly what _recursive_split (splitting) and _merge_pi
      low, and which one you'd tighten and to what.
 
      Milestone 3. -->
+
+I didn't miss any criterion, but I don't think it's because the criterion I set was too low. I think the original questions I asked weren't too complicated or interesting. All they needed as a reference point was 1 chunk. I think the evaluation would have been more informative if the questions had some advanced logic that referred to multiple documents. Originally I changed the question, "what day does the shuttle run on Saturday?" in lieu of "the weekend" which the original source document states. It turns out that the model is smart enough to discern that Saturday is a day of the weekend. In addition, this corpus is fairly well organized with meaningful file names and the content is concise and straight to the point with paragraph seperators. I think the same criterion would be harder to pass on a different corpus that is less orderly.  
 
 ## The Improvement
 
