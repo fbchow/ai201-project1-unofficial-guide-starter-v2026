@@ -80,36 +80,21 @@ def fallback_split(
     return chunks
 
 
-def _recursive_split(text: str, chunk_size: int, separators: list[str]) -> list[str]:
+def _split_on_lines(text: str, chunk_size: int) -> list[str]:
     """
-    Split `text` on the first separator that appears in it, then recurse on
-    any piece that's still too big, moving down the separator list.
-
-    Separators are tried in order (paragraph breaks, then line breaks, then
-    words). If none of them appear, or we run out of separators, fall back to
-    a hard character-level cut — the same thing `fallback_split` does.
+    Split `text` on line breaks ("\\n"). Any line still longer than
+    `chunk_size` is hard-cut into fixed-size pieces — the same thing
+    `fallback_split` does.
     """
-    if len(text) <= chunk_size:
-        return [text] if text else []
-
-    if not separators:
-        return [
-            text[start : start + chunk_size]
-            for start in range(0, len(text), chunk_size)
-        ]
-
-    separator, rest = separators[0], separators[1:]
-    if separator not in text:
-        return _recursive_split(text, chunk_size, rest)
-
     pieces: list[str] = []
-    for part in text.split(separator):
-        if not part.strip():
+    for line in text.split("\n"):
+        if not line.strip():
             continue
-        if len(part) <= chunk_size:
-            pieces.append(part)
+        if len(line) <= chunk_size:
+            pieces.append(line)
         else:
-            pieces.extend(_recursive_split(part, chunk_size, rest))
+            for start in range(0, len(line), chunk_size):
+                pieces.append(line[start : start + chunk_size])
     return pieces
 
 
@@ -147,14 +132,12 @@ def split_documents(
     overlap: int | None = None,
 ) -> list[Chunk]:
     """
-    Split documents into chunks using a simple recursive character splitter.
+    Split documents into chunks by line breaks.
 
-    Line breaks ("\\n") are the primary split point. Any line still longer
-    than `chunk_size` is recursively re-split on spaces, falling back to a
-    hard character cut only as a last resort. Small pieces are then merged
-    back together up to `chunk_size`, so a short line isn't stranded as its
-    own tiny chunk, and neighbouring chunks share `overlap` characters of
-    context.
+    Line breaks ("\\n") are the split point. Any line still longer than
+    `chunk_size` is hard-cut. Small pieces are then merged back together up
+    to `chunk_size`, so a short line isn't stranded as its own tiny chunk,
+    and neighbouring chunks share `overlap` characters of context.
     """
     chunk_size = chunk_size or config.CHUNK_SIZE
     overlap = overlap or config.CHUNK_OVERLAP
@@ -164,7 +147,7 @@ def split_documents(
 
     chunks: list[Chunk] = []
     for doc in documents:
-        pieces = _recursive_split(doc.text, chunk_size, ["\n", " "])
+        pieces = _split_on_lines(doc.text, chunk_size)
         for index, text in enumerate(_merge_pieces(pieces, chunk_size, overlap)):
             text = text.strip()
             if text:

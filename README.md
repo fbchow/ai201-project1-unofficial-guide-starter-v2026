@@ -455,9 +455,10 @@ I didn't miss any criterion, but I don't think it's because the criterion I set 
 ## The Improvement
 
 **What I changed:**
+I removed the recursive part of the splitting logic. In the recursive splitting algorithm, you keep splitting on new lines, then by spaces if the chunk is bigger than the specified chunk size.
 
 **Why I picked it:**
-
+For the sake of simplifying the chunking function, I want to see if it's necessary to keep this complicated logic or if we can simplify the chunking logic even further. The simpler, more parsomonious algorithm is usually easier to explain and uses less resources. Why complicate when it doesn't add any extra performance benefits?!
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
 
@@ -468,14 +469,172 @@ I didn't miss any criterion, but I don't think it's because the criterion I set 
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Chunks are short and less than 600 characters | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers do not contain profanity | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
+By running: `python run_eval.py --label after`, the file `results/run_2026-09-28-1556_after.md` produced these results:
+
+### What time is the library open until during the term? — run 1
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+The library is open until 2am during the term. 
+
+Source: housing_old_brewhouse_noise.txt (also mentioned in study_library_hours.txt)
+```
+
+### What time is the library open until during the term? — run 2
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+During the term, the library is open until 2am. 
+
+Sources: `housing_old_brewhouse_noise.txt` and `study_library_hours.txt`
+```
+
+### What time is the library open until during the term? — run 3
+
+- Best distance: 0.3101 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, study_library_hours.txt
+
+```
+The library is open until 2am during the term. 
+
+Source: *study_library_hours.txt* (also mentioned in *housing_old_brewhouse_noise.txt*)
+```
+
+### How often does the bus shuttle run on Saturdays? — run 1
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: admin_housing_lottery.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs a loop every 40 minutes on weekends. 
+
+Source: transit_shuttle.txt
+```
+
+### How often does the bus shuttle run on Saturdays? — run 2
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: admin_housing_lottery.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs a loop every 40 minutes on weekends. 
+
+Source: transit_shuttle.txt
+```
+
+### How often does the bus shuttle run on Saturdays? — run 3
+
+- Best distance: 0.3005 (passed the gate)
+- Sources retrieved: admin_housing_lottery.txt, transit_shuttle.txt, winter_gear.txt
+
+```
+The campus shuttle runs every 40 minutes on weekends (transit_shuttle.txt).
+```
+
+### How much cloud storage do students get on student accounts? — run 1
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage with their student account. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### How much cloud storage do students get on student accounts? — run 2
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage on their student accounts. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### How much cloud storage do students get on student accounts? — run 3
+
+- Best distance: 0.2921 (passed the gate)
+- Sources retrieved: admin_printing_quota.txt, admin_wifi_and_accounts.txt, course_cs_210_workload.txt
+
+```
+Students get a cloud drive with unlimited storage on their student accounts. 
+
+Source: admin_wifi_and_accounts.txt
+```
+
+### When do library and dining jobs get posted? — run 1
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (money_jobs.txt).
+```
+
+### When do library and dining jobs get posted? — run 2
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (money_jobs.txt).
+```
+
+### When do library and dining jobs get posted? — run 3
+
+- Best distance: 0.3331 (passed the gate)
+- Sources retrieved: admin_library_holds.txt, housing_old_brewhouse_noise.txt, money_jobs.txt
+
+```
+Library and dining jobs are posted in the first week of each semester (money_jobs.txt).
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 1
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: housing_aldridge_hall_laundry.txt
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 2
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: housing_aldridge_hall_laundry.txt
+```
+
+### When is the best time to do laundry in Alridge Hall? — run 3
+
+- Best distance: 0.2340 (passed the gate)
+- Sources retrieved: housing_aldridge_hall_laundry.txt, housing_old_brewhouse_laundry.txt, housing_tamsin_court_laundry.txt
+
+```
+The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning. 
+
+Source: `housing_aldridge_hall_laundry.txt`
+```
 **Did it help?**
-
+Yes, I think it helped simplify the process of chunking and thus made it easier to explain. That's an added benefit for governance.  
 <!-- Say plainly whether it did, and how you know. If it made things worse,
      say that — a change that backfired, honestly reported, earns full credit
      and is more interesting than one that worked. What matters is that you can
@@ -484,6 +643,7 @@ I didn't miss any criterion, but I don't think it's because the criterion I set 
      Milestone 4. -->
 
 ## What's Still Broken
+Nothing but there's always room for improvement. The fact that removing the recursive character splitting algorithm logic produces the same results as simply splitting on new lines makes me question if the implementation was correct. Or maybe the recursive character splitting logic is more useful when you pick a chunk size that is less compatible with the corpus structure. I originally had a sense of what constitutes a reasonable chunk size from reading the corpus stats and counting some sample character lengths of responses. But this generalizable heuristic may not be possible for a different type of corpus.
 
 <!-- For each criterion still missed after your fix: what you'd do about it,
      and why you stopped where you did.
@@ -499,3 +659,4 @@ I didn't miss any criterion, but I don't think it's because the criterion I set 
      differently, and why?
 
      Milestone 5. -->
+I would decrease the 600 character chunk criterion. The type of responses you get from the campus corpus are even more short and straight-forward. Even less than 100 characters could suffice. Answers could just name the fact without a sentence. This is more useful since students are short in time and just need a short response of the fact, such as the time or location. There's no need use more characters to explain or reason the answers.
