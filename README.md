@@ -1,6 +1,6 @@
 # The Unofficial Guide
 ## Campus Life
-<!-- Replace this line with your name and which corpus you picked. -->
+
 
 ---
 
@@ -9,11 +9,7 @@
 ## What This Does
 This system answers questions about university campus life from a collection of short 88 documents. The documents are parsed into chunks by new line, and these units of information are sourced to answer user questions. Campus life topics, include transportation, housing, courses, library. If the sytem does not know the answer to a question, it will say so rather than make up an answer.  
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
 
-     Milestone 5. -->
 
 ## Chunking Strategy
 
@@ -24,26 +20,8 @@ Since the average character length of each document was 317 characters, I picked
 
 Both the questions and answers I propose straight-forward and short. They can be deduced from each new line of info in a document. Since I don't expect the information to come from multiple lines and multiple paragraphs, I tried recursive character text splitting on the new line "\n" character. This eliminates the need for overlap because a new line is such a clear delimiter you don't need extra overlap padding characters as back-up in case your chunks overlap in an awkward way.  
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
-
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
-
-     Milestone 3. -->
 
 ## Sample Chunks
-
-<!-- Five chunks, pasted as text. Label each one and name the file it came from
-     AND the function that produced it — the grader checks your code against
-     what you claim here.
-
-     `python app.py chunks -n 5` prints all three for you. Copy them straight
-     across.
-
-     Milestone 3. -->
 
 
 ```
@@ -154,14 +132,6 @@ Sources retrieved: dining_kestrel_commons.txt, transit_shuttle.txt, winter_gear.
 
 It looks like a clear boundary around 0.5 is forming for the in corpus document questions. And the obviously random questions out of context are above 0.8. I picked 0.55 in case to stay clear of rounding error in from the highest distance of 0.498 might have as it is rounded to 0.5 or trailing digits.  
 
-<!-- The number you set in config.py, and how you got there.
-
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
-
-     Milestone 4. -->
 
 | Question | In corpus? | Best distance |
 |---|---|---|
@@ -179,15 +149,6 @@ It looks like a clear boundary around 0.5 is forming for the in corpus document 
 
 
 ## How I Used AI
-
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
-
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
-
-     Milestone 5. -->
 
 **1.** 
 I asked Claude to write the recursive character split function. I learned about this chunking strategy from [this Youtube video](https://www.youtube.com/watch?v=8OJC21T2SL4&t=964s) and [this dev.to blog post](https://dev.to/eteimz/understanding-langchains-recursivecharactertextsplitter-2846). Most examples online, like [this denser.ai blog post](https://denser.ai/blog/rag-chunking-strategies/), use the `RecursiveCharacterTextSplitter()` function from the LangChain library, but I did not want to import an external library. I asked Claude to implement a simple recursive character split function that splits chunks by new lines because that's how my answers will look like.  
@@ -245,10 +206,6 @@ In this codebase, that's exactly what _recursive_split (splitting) and _merge_pi
 | 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
 | 4. Chunks are short and less than 600 characters | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
 | 5. Answers do not contain profanity | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
-
-<!-- Underneath, paste the REAL output for each criterion from one of your
-     runs — the actual text your system produced, not a description of it.
-     Name the file and function that produced it. -->
 
 By running: `python run_eval.py --label before`, the file `results/run_2026-09-23-1558_before.md` produced these results:
 
@@ -450,7 +407,7 @@ Source: housing_aldridge_hall_laundry.txt
 
      Milestone 3. -->
 
-I didn't miss any criterion, but I don't think it's because the criterion I set was too low. I think the original questions I asked weren't too complicated or interesting. All they needed as a reference point was 1 chunk. I think the evaluation would have been more informative if the questions had some advanced logic that referred to multiple documents. Originally I changed the question, "what day does the shuttle run on Saturday?" in lieu of "the weekend" which the original source document states. It turns out that the model is smart enough to discern that Saturday is a day of the weekend. In addition, this corpus is fairly well organized with meaningful file names and the content is concise and straight to the point with paragraph seperators. I think the same criterion would be harder to pass on a different corpus that is less orderly.  
+I didn't miss any criterion and I think that was due to the chunking stage doing a good job at cutting the text into parts. I could have set the criterion higher at 5 out of 5 answers should contain the answer. I think the original questions I asked weren't too complicated or interesting. All they needed as a reference point was 1 chunk. I think the evaluation would have been more informative if the questions had some advanced logic that referred to multiple documents. Originally I changed the question, "what day does the shuttle run on Saturday?" in lieu of "the weekend" which the original source document states. It turns out that the model is smart enough to discern that Saturday is a day of the weekend. In addition, this corpus is fairly well organized with meaningful file names and the content is concise and straight to the point with paragraph seperators. I think the same criterion would be harder to pass on a different corpus that is less orderly.  
 
 ## The Improvement
 
@@ -459,13 +416,8 @@ I removed the recursive part of the splitting logic. In the recursive splitting 
 
 **Why I picked it:**
 For the sake of simplifying the chunking function, I want to see if it's necessary to keep this complicated logic or if we can simplify the chunking logic even further. The simpler, more parsomonious algorithm is usually easier to explain and uses less resources. Why complicate when it doesn't add any extra performance benefits?!
-<!-- Connect it to a specific diagnosis above in one sentence. If you can't,
-     you picked a fix because it sounded impressive. -->
 
 ### Run Log — After
-
-<!-- Same format, same five criteria, three runs each.
-     `python run_eval.py --label after` -->
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
@@ -634,29 +586,11 @@ The best time to do laundry in Aldridge Hall is Tuesday or Wednesday morning.
 Source: `housing_aldridge_hall_laundry.txt`
 ```
 **Did it help?**
-Yes, I think it helped simplify the process of chunking and thus made it easier to explain. That's an added benefit for governance.  
-<!-- Say plainly whether it did, and how you know. If it made things worse,
-     say that — a change that backfired, honestly reported, earns full credit
-     and is more interesting than one that worked. What matters is that you can
-     tell.
+No, I don't think it helped. The numbers for best distance are about the same, so I don't think the change made a marked impact on the answer results.
 
-     Milestone 4. -->
 
 ## What's Still Broken
 Nothing but there's always room for improvement. The fact that removing the recursive character splitting algorithm logic produces the same results as simply splitting on new lines makes me question if the implementation was correct. Or maybe the recursive character splitting logic is more useful when you pick a chunk size that is less compatible with the corpus structure. I originally had a sense of what constitutes a reasonable chunk size from reading the corpus stats and counting some sample character lengths of responses. But this generalizable heuristic may not be possible for a different type of corpus.
 
-<!-- For each criterion still missed after your fix: what you'd do about it,
-     and why you stopped where you did.
-
-     "I ran out of time" is fine if it's true. Pretending nothing is left is
-     not.
-
-     Milestone 5. -->
-
 ## What I'd Do Differently
-
-<!-- Knowing what you know now — which of your five criteria would you write
-     differently, and why?
-
-     Milestone 5. -->
 I would decrease the 600 character chunk criterion. The type of responses you get from the campus corpus are even more short and straight-forward. Even less than 100 characters could suffice. Answers could just name the fact without a sentence. This is more useful since students are short in time and just need a short response of the fact, such as the time or location. There's no need use more characters to explain or reason the answers.
